@@ -1,3 +1,4 @@
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 public class Main {
@@ -9,24 +10,26 @@ public class Main {
         int[] lens = new int[]{11, 12, 40, 1, 1};
         int pnt = 0;
         int idx = 0;
-        
+
         for (int x : lens) {
             StringBuilder sb = new StringBuilder();
 
-            int byteCnt = 0;
-            while(byteCnt < x && pnt < str.length()) {
-                // 한글 / 영문, 숫자 구분해서 byteCnt 다르게 증가
+            int byteCnt = 0; // 각 필드의 byte 누적 카운트 값
+            while(pnt < str.length() && byteCnt < x) {
                 String tempStr = str.substring(pnt, pnt + 1);
 
-                if (tempStr.getBytes(StandardCharsets.UTF_8).length == 3) { //한글
-                    sb.append(tempStr);
-                    byteCnt += 2;
-                    pnt += 1;
-                } else { // 영문, 숫자, 공백
-                    sb.append(tempStr);
-                    byteCnt += 1;
-                    pnt += 1;
+                int increase = 0;
+                try {
+                    byte[] tempBytes = tempStr.getBytes("EUC-KR");
+                    increase = tempBytes.length;
+                } catch (UnsupportedEncodingException e) {
+                    byte[] tempBytes = tempStr.getBytes(StandardCharsets.UTF_8);
+                    increase = tempBytes.length == 3 ? 2 : 1;
                 }
+
+                sb.append(tempStr);
+                byteCnt += increase;
+                pnt += 1;
             }
 
             strArr[idx] = sb.toString();
