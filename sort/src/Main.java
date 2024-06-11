@@ -14,6 +14,9 @@ public class Main {
             arr[i] = Integer.parseInt(br.readLine());
         }
 
+        QuickSort quickSort = new QuickSort();
+        quickSort.quickSortByLeftPivot(arr, 0, arr.length-1);
+
         for (int x : arr) {
             System.out.print(x + " ");
         }
